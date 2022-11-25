@@ -11,16 +11,34 @@
       const REPO = "ttschnz/test_photos";
       let target = document.getElementById("target");
 
+      let allowedFileExtensions = [
+        "jpg",
+        "jpeg",
+        "png",
+        "gif",
+        "bmp",
+        "webp",
+        "avif",
+      ];
+
+      function checkFileExtension(filename) {
+        let fileExtension = filename.split(".").pop();
+        return allowedFileExtensions.includes(fileExtension);
+      }
+
       fetch(`https://api.github.com/repos/${REPO}/contents`)
         .then((response) => response.json())
         .then((data) => {
           data.forEach((item) => {
-            if (item.type === "file") {
+            if (item.type === "file" && checkFileExtension(item.name)) {
               let img = document.createElement("img");
               img.src = item.download_url;
               target.appendChild(img);
             }
           });
+        })
+        .catch((error) => {
+          console.error(error);
         });
     </script>
   </body>
